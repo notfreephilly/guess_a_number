@@ -33,7 +33,7 @@ def number_guessing_game(request):
         else:
             result = "Too low! Guess again"
 
-    return render(request, 'guessing_game_form.html', {
+    return render(request, 'base.html', {
         'result': result
     })
 
