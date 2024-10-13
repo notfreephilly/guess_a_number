@@ -1,16 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import random
+from .forms import NewUserForm
+from django.contrib.auth import login
+from django.contrib import messages
 
-# ask user for any whole number
-# generate a random number from 0 - user input
-# ask user for a random number as input
-# compare generated number to user input number
-# if number is correct, display congratulations message
-# if number is wrong, display you lost message
 
-# user should have 10 tries
-# after each try user should be told if they are close or far from goal number
-
+def homepage(request):
+    return render(request, "home.html")
 
 
 def number_guessing_game(request):
@@ -33,8 +29,20 @@ def number_guessing_game(request):
         else:
             result = "Too low! Guess again"
 
-    return render(request, 'base.html', {
+    return render(request, 'game.html', {
         'result': result
     })
 
 
+
+def register_request(request):
+    if request.method == "POST":
+        form = NewUserForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Registration successful!")
+            return redirect("main:homepage")
+        messages.error(request, "Unsuccessful registration. Invalid information.")
+    form = NewUserForm()
+    return render (request=request, template_name="register.html", context={"register_form":form})
